@@ -1,6 +1,7 @@
 import java.io.*;
 import java.util.Scanner;
 import java.lang.Runtime;
+import java.util.Random;
 
 public class CPU {
 
@@ -8,7 +9,7 @@ public class CPU {
         try {
 
             Runtime rt = Runtime.getRuntime();
-            Process proc = rt.exec("java src/Memory.java");
+            Process proc = rt.exec("java Memory.java");
 
             InputStream cpu_in = proc.getInputStream(); // Memory's Output Stream turns into CPU's input
             OutputStream cpu_out = proc.getOutputStream(); // Memory reads from CPU's output stream (Needs to PrintWrite & flush)
@@ -16,7 +17,7 @@ public class CPU {
             PrintWriter pw = new PrintWriter(cpu_out);
             Scanner sc = new Scanner(cpu_in);
             // Tell Memory to copy instructions from sample files
-            pw.printf("%s\n", args[0]);
+            pw.println(args[0]);
             pw.flush();
 
             int timer_limit = Integer.parseInt(args[1]);
@@ -48,7 +49,6 @@ public class CPU {
                 timer++;
                 if(timer >= timer_limit && !kernel_mode){
                     kernel_mode = true;
-                    //System.out.println("TIMER! INTERRUPTED AT PC = " + PC + " SAVED SP AT = " + SP); System.out.println();
                     timer -= timer_limit-1;
                     pw.printf("write(%d, %d)\n", 1999, SP);
                     pw.flush();
@@ -61,9 +61,7 @@ public class CPU {
                     MEM_output = Integer.parseInt(sc.nextLine()); // Get instruction starting at 1000
                 }
 
-                //System.out.println("PC: " + PC);
                 PC++;
-                //System.out.println("IR: " + MEM_output);
                 IR = MEM_output;
                 switch(MEM_output){
                     case 1: // Load the value into the AC
@@ -74,9 +72,7 @@ public class CPU {
                         String AC_val1 = sc.nextLine();
                         int val1 = Integer.parseInt(AC_val1);
 
-                        //System.out.println("Loaded value: " + AC_val1);
                         AC = Integer.parseInt(AC_val1);
-                        //System.out.println("AC = " + AC); System.out.println();
                         break;
 
                     case 2: // Load the value at the address into the AC
@@ -97,7 +93,17 @@ public class CPU {
 
                         int val2 = Integer.parseInt(sc.nextLine());
                         AC = val2;
-                        //System.out.println("LOAD FROM ADDRESS: " + addr2 + " AC = " + AC); System.out.println();
+                        break;
+                    case 3: // Load the value from the address found in the given address into the AC
+                        pw.printf("read(%d)\n", PC);
+                        pw.flush();
+                        PC++;
+
+                        int addr3 = Integer.parseInt(sc.nextLine());
+                        pw.printf("read(%d)\n", addr3);
+                        pw.flush();
+                        int val3 = Integer.parseInt(sc.nextLine());
+                        AC = val3;
                         break;
 
                     case 4: // Load the value at (address+X) into the AC
@@ -119,7 +125,6 @@ public class CPU {
                         pw.flush();
                         int val4 = Integer.parseInt(sc.nextLine());
                         AC = val4;
-                        //System.out.println("AC = " + AC); System.out.println();
                         break;
 
                     case 5: // Load the value at (address+Y) into the AC
@@ -140,7 +145,6 @@ public class CPU {
                         pw.flush();
                         int val5 = Integer.parseInt(sc.nextLine());
                         AC = val5;
-                        //System.out.println("AC = " + AC); System.out.println();
                         break;
 
                     case 6: // Load from (SP+X) into the AC (if SP is 990, and X is 1, load from 991);
@@ -152,11 +156,9 @@ public class CPU {
                             break;
                         }
                         pw.printf("read(%d)\n", SP+X);
-                        //System.out.println(SP+X);
                         pw.flush();
                         int val6 = Integer.parseInt(sc.nextLine());
                         AC = val6;
-                        //System.out.println("[LOAD SP+X] SP = " + SP + " | X = " + X + " | AC = " + AC); System.out.println();
                         break;
 
                     case 7: // Store the value in the AC into the address
@@ -173,11 +175,13 @@ public class CPU {
                             break;
                         }
                         pw.printf("write(%d, %d)\n", addr7, AC);
-                        //System.out.println("[LOAD AC VALUE INTO ADDR] ADDR: " + addr7 + " AC: " + AC);
                         break;
 
-                    case 8:
-
+                    case 8: // Gets a random int from 1 to 100 into the AC
+                        Random rand = new Random();
+                        int random_num = rand.nextInt(100-1) + 1;
+                        AC = random_num;
+                        break;
 
                     case 9: // If port = 1, writes AC as an int to the screen; port = 2 writes AC as a char to the screen
                         pw.printf("read(%d)\n", PC);
@@ -186,65 +190,50 @@ public class CPU {
 
                         int port = Integer.parseInt(sc.nextLine());
                         if(port == 1){
-                            //System.out.println("OUTPUT = " + AC);
                             System.out.print(AC);
                         }
                         else if(port == 2){
-                           //System.out.printf("OUTPUT = %c\n\n", AC);
                             System.out.printf("%c", AC);
-                        }
-                        else{
-                           // System.out.println();
                         }
                         break;
                     case 10: // Add the value in X to the AC
                         AC += X;
-                        //System.out.println("AC = " + AC); System.out.println();
                         break;
 
                     case 11: // Add the value in Y to the AC
                         AC += Y;
-                        //System.out.println("AC = " + AC); System.out.println();
                         break;
 
                     case 12: // Subtract the value in X from the AC
                         AC -= X;
-                        //System.out.println("AC = " + AC); System.out.println();
                         break;
 
                     case 13: // Subtract the value in Y from the AC
                         AC -= Y;
-                        //System.out.println("AC = " + AC); System.out.println();
                         break;
 
                     case 14: // Copy the value in the AC to X
                         X = AC;
-                        //System.out.println("X = " + X); System.out.println();
                         break;
 
                     case 15: // Copy the value in X to the AC
                         AC = X;
-                        //System.out.println("AC = " + AC); System.out.println();
                         break;
 
                     case 16: // Copy the value in the AC to Y
                         Y = AC;
-                        //System.out.println("Y = " + Y); System.out.println();
                         break;
 
                     case 17: // Copy the value in Y to the AC
                         AC = Y;
-                        //System.out.println("AC = " + AC); System.out.println();
                         break;
 
                     case 18: // Copy the value in AC to the SP
                         SP = AC;
-                        //System.out.println("SP = " + SP); System.out.println();
                         break;
 
                     case 19: // Copy the value in SP to the AC
                         AC = SP;
-                        //System.out.println("AC = " + AC); System.out.println();
                         break;
 
                     case 20: // Jump to the addr
@@ -261,7 +250,6 @@ public class CPU {
                             break;
                         }
                         PC = addr20;
-                        //System.out.println("[JUMP] PC = " + PC); System.out.println();
                         break;
 
                     case 21: // Jump to the address only if the value in the AC is zero
@@ -280,9 +268,7 @@ public class CPU {
                                 break;
                             }
                             PC = addr21;
-                            //System.out.println("PC = " + PC); System.out.println();
                         }
-                       //System.out.println();
                         break;
 
                     case 22: // Jump to the address only if the value in the AC is not zero
@@ -302,9 +288,7 @@ public class CPU {
                                 break;
                             }
                             PC = addr22;
-                            //System.out.println("PC = " + PC); System.out.println();
                         }
-                        //System.out.println();
                         break;
 
                     case 23: // Push return address onto stack, jump to the address
@@ -317,7 +301,6 @@ public class CPU {
                         pw.printf("write(%d, %d)\n", SP, PC);
                         pw.flush();
                         PC = jump_addr23;
-                        //System.out.println("[PUSH STACK and JUMP] WRITTEN TO SP = " + SP + " | JUMP Address = " + jump_addr23 + " | PC = " + PC); System.out.println();
                         break;
 
                     case 24: // Pop return address from the stack, jump to the address
@@ -331,17 +314,15 @@ public class CPU {
                         pw.printf("write(%d, 0)\n" , SP);
                         pw.flush();
                         SP++;
-                        //System.out.println("[POP STACK AND JUMP TO POPPED] SP = " + SP + " | VALUE = " + return_addr24 + " | PC = " + PC); System.out.println();
+
                         break;
 
                     case 25: // Increment the value of X
                         X++;
-                        //System.out.println("X = " + X); System.out.println();
                         break;
 
                     case 26: // Decrement the value in X
                         X--;
-                        //System.out.println("X = " + X); System.out.println();
                         break;
 
                     case 27: // Push AC onto the stack
@@ -349,7 +330,6 @@ public class CPU {
                         //System.out.println(SP);
                         pw.printf("write(%d, %d)\n", SP, AC);
                         pw.flush();
-                        //System.out.println("[PUSH AC TO STACK] WRITTEN TO SP = " + SP + " | AC = " + AC); System.out.println();
                         break;
 
                     case 28: // Pop from stack into AC
@@ -363,7 +343,6 @@ public class CPU {
                         pw.printf("write(%d, 0)\n" , SP);
                         pw.flush();
                         SP++;
-                        //System.out.println("[POP FROM STACK INTO AC] SP = " + SP + " | VALUE = " + val28 + " | AC = " + AC); System.out.println();
                         break;
 
                     case 29: // Perform system call
@@ -397,7 +376,6 @@ public class CPU {
                         SP = SP_prev;
                         break;
 
-                    default:
                     case 50:
                         pw.printf("exit()\n");
                         pw.flush();

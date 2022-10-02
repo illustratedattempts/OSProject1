@@ -1,10 +1,119 @@
 .0
-23 // Call Addr to go to Pew
+8 // Load AC with rando number
+14 // Copy to X
+23 // Go to print pew instructs
+100
+8 // Load AC with rando number
+14
+23 // Go to print kaboom instructs
+300
+8 // Load AC with rando number
+14
+23 // Go to print pow instructs
+400
+50
+
+.100 //Print 'pew'
+1 // Load AC = 'p' or 112
+112
+9 // Output p
+2
+1 // Load 'e'
+101
+9
+2
+1 // Load 'w'
+119
+9
+2
+1 // Load ' '
+32
+9
+2
+26 // Dec X
+15 // Load AC = X
+21 // Jump to addr if AC = 0 | Check if X is 0
+500
+
+20 // Jump back to 100
+100
+
+.200 // Print new line
+1
+10
+9
+2
+24
+
+.300 // Print 'kaboom'
+1 // Load k
+107
+9
+2
+1 // Load a
+97
+9
+2
+1 // Load b
+98
+9
+2
+1 // Load o
+111
+9
+2
+1 // Load o
+111
+9
+2
+1 // Load m
+109
+9
+2
+1 // Load ' '
+32
+9
+2
+26 // Dec X
+15 // Load AC = X
+21 // Jump to addr if AC = 0 | Check if X is 0
+500
+
+20 // Jump back to 300
+300
+
+.400 // Print 'pow'
+1 // Load p
+112
+9
+2
+1 // Load o
+111
+9
+2
+1 // Load w
+119
+9
+2
+1 // Load ' '
+32
+9
+2
+26 // Dec X
+15 // Load AC = X
+21 // Jump to addr if AC = 0 | Check if X is 0
+500
+
+20 // Jump back to 400
+400
+
+.500 // Return address from stack
+23 // Instructions to print new line
 200
+24
 
-
-
-
+.1000 // Return on interrupt immediately
+30
 
 
 

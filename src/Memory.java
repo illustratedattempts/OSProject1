@@ -2,7 +2,6 @@ import java.util.Scanner;
 import java.io.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.Scanner;
 
 public class Memory {
     public static void main(String[] args){
@@ -16,7 +15,7 @@ public class Memory {
             if(sc.hasNextLine()){
                 file_name = sc.nextLine();
             }
-            BufferedReader reader = new BufferedReader(new FileReader("src/"+file_name));
+            BufferedReader reader = new BufferedReader(new FileReader(file_name));
             String line = reader.readLine();
             int pos = 0;
             //System.out.println("SYSTEM READING:");
@@ -49,7 +48,7 @@ public class Memory {
 
             //Read and Write Operation Patterns
             Pattern read_op = Pattern.compile("read\\((\\d+)\\)");
-            Pattern write_op = Pattern.compile("write\\((\\d+),\s?(\\d+)\\)");
+            Pattern write_op = Pattern.compile("write\\((\\d+),\\s?(\\d+)\\)");
 
             //Take CPU input
             // NEED EXIT CALL TO BREAK FOR BOTH CPU AND MEM
