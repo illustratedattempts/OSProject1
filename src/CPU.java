@@ -9,13 +9,14 @@ public class CPU {
         try {
 
             Runtime rt = Runtime.getRuntime();
-            Process proc = rt.exec("java Memory.java");
+            Process proc = rt.exec("java Memory"); // Only .java for windows systems, UNIX just file name
 
             InputStream cpu_in = proc.getInputStream(); // Memory's Output Stream turns into CPU's input
             OutputStream cpu_out = proc.getOutputStream(); // Memory reads from CPU's output stream (Needs to PrintWrite & flush)
 
             PrintWriter pw = new PrintWriter(cpu_out);
             Scanner sc = new Scanner(cpu_in);
+
             // Tell Memory to copy instructions from sample files
             pw.println(args[0]);
             pw.flush();
